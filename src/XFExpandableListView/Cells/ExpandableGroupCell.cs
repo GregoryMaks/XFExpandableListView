@@ -73,7 +73,7 @@ namespace XFExpandableListView.Cells
                     #region [Toggle Group]
 
                     /* If is collapsing enabled, then collapse/expand the group */
-                    if (ExpandableController.IsCollapsingEnabled)
+                    if (ExpandableController.IsCollapsingEnabled && GroupController.IsExpandable)
                     {
                         await ExpandableController.ToggleGroup(GroupController);
                     }

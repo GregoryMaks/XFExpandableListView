@@ -21,6 +21,11 @@ namespace XFExpandableListView.Abstractions
         bool IsExpanded { get; set; }
 
         /// <summary>
+        /// Property that indicates if the group can be expanded or collapsed
+        /// </summary>
+        bool IsExpandable { get; set; }
+
+        /// <summary>
         /// Copy Method
         /// </summary>
         /// <returns>The copied instance</returns>

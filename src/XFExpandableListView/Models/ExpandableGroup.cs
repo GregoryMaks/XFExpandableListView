@@ -24,6 +24,8 @@ namespace XFExpandableListView.Models
             }
         }
 
+        public bool IsExpandable { get; set; }
+
         public Guid Id { get; set; }
 
         public ExpandableGroup(Guid id)
