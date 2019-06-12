@@ -2,6 +2,8 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using XFExpandableListView.Abstractions;
+using Xamarin.Forms;
+using System.Windows.Input;
 
 namespace XFExpandableListView.Models
 {
@@ -12,6 +14,20 @@ namespace XFExpandableListView.Models
     /// <typeparam name="T"></typeparam>
     public class ExpandableGroup<T> : ObservableCollection<T>, IExpandableGroup
     {
+        public Guid Id { get; set; }
+
+        private bool _isExpandable;
+        public bool IsExpandable
+        {
+            get => _isExpandable;
+            set
+            {
+                if (_isExpandable == value) return;
+                _isExpandable = value;
+                OnPropertyChanged(new PropertyChangedEventArgs(nameof(IsExpandable)));
+            }
+        }
+
         private bool _isExpanded;
         public bool IsExpanded
         {
@@ -24,18 +40,37 @@ namespace XFExpandableListView.Models
             }
         }
 
-        public bool IsExpandable { get; set; }
+        private string _title;
+        public string Title
+        {
+            get => _title;
+            set
+            {
+                if (_title == value) return;
+                _title = value;
+                OnPropertyChanged(new PropertyChangedEventArgs(nameof(Title)));
+            }
+        }
 
-        public Guid Id { get; set; }
+        public ICommand CellTappedCommand { get; set; }
 
-        public ExpandableGroup(Guid id)
+        public event EventHandler<ToggleExpandEventArgs> ToggleExpandedState;
+
+        public ExpandableGroup(Guid id, string title)
         {
             Id = id;
+            CellTappedCommand = new Command((obj) =>
+            {
+                if (IsExpandable)
+                {
+                    ToggleExpandedState?.Invoke(this, new ToggleExpandEventArgs { NewExpandableState = !IsExpanded } );
+                }
+            });
         }
 
         public virtual IExpandableGroup NewInstance()
         {
-            return new ExpandableGroup<T>(Id);
+            return new ExpandableGroup<T>(Id, Title);
         }
     }
 }

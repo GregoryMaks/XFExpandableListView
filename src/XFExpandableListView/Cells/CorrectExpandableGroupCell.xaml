@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewCell xmlns="http://xamarin.com/schemas/2014/forms"
+          xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+          x:Class="XFExpandableListView.Cells.CorrectExpandableGroupCell">
+    <!-- Default VM for this cell is ExpandableGroup -->
+    <ViewCell.View>
+        <StackLayout>
+            <Label Text="{Binding Title}" />
+            <StackLayout.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding CellTappedCommand}" />
+            </StackLayout.GestureRecognizers>
+        </StackLayout>
+    </ViewCell.View>
+</ViewCell>

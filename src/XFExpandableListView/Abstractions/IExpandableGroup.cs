@@ -30,5 +30,12 @@ namespace XFExpandableListView.Abstractions
         /// </summary>
         /// <returns>The copied instance</returns>
         IExpandableGroup NewInstance();
+
+        event EventHandler<ToggleExpandEventArgs> ToggleExpandedState;
+    }
+
+    public class ToggleExpandEventArgs
+    {
+        public bool NewExpandableState { get; set; }
     }
 }

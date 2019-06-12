@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using XFExpandableListView.Abstractions;
 using XFExpandableListView.EventArgs;
+using Xamarin.Forms.Internals;
 
 namespace XFExpandableListView.Controls
 {
@@ -193,6 +194,7 @@ namespace XFExpandableListView.Controls
             if (expandableGroup.IsExpanded) return;
 
             expandableGroup.IsExpanded = true;
+            itemsSourceGroup.IsExpanded = true;
 
             /* Hard operations must not affect the UI Thread */
             await Task.Run(() =>
@@ -219,6 +221,7 @@ namespace XFExpandableListView.Controls
             if (!expandableGroup.IsExpanded) return;
 
             expandableGroup.IsExpanded = false;
+            itemsSourceGroup.IsExpanded = false;
 
             /* Hard operations must not affect the UI Thread */
             await Task.Run(() =>
@@ -264,6 +267,40 @@ namespace XFExpandableListView.Controls
 
         #region [Helpers]
 
+        async Task InternalCallToggleGroup(IExpandableGroup group)
+        {
+            if (group == null) return;
+
+            #region [Toggle Group]
+
+            /* If is collapsing enabled, then collapse/expand the group */
+            if (IsCollapsingEnabled && group.IsExpandable)
+            {
+                await ToggleGroup(group);
+            }
+
+            #endregion
+
+            #region [Execute ListView Command]
+
+            /* Execute the group header command */
+            if (GroupHeaderCommand == null) return;
+
+            /* Pass the GroupHeader Command Parameter if it is not null, otherwise pass the group */
+            var parameter = GroupHeaderCommandParameter ?? group;
+            if (!GroupHeaderCommand.CanExecute(parameter)) return;
+            GroupHeaderCommand.Execute(parameter);
+
+            #endregion
+
+            #region [Invoke Event]
+
+            /* Invoke the Group Clicked Event */
+            OnGroupClicked(group);
+
+            #endregion
+        }
+
         async Task UpdateExpandedItems()
         {
             IList existingGroups = (ItemsSource as IList) ?? new List<IExpandableGroup>();
@@ -272,7 +309,14 @@ namespace XFExpandableListView.Controls
             var updatedItemsSource = new ObservableCollection<IExpandableGroup>();
             foreach (IExpandableGroup group in AllGroups)
             {
-                updatedItemsSource.Add(group.NewInstance());
+                var copy = group.NewInstance();
+                // Expandable event handler
+                copy.ToggleExpandedState += async (sender, e) =>
+                {
+                    await InternalCallToggleGroup(sender as IExpandableGroup);
+                };
+
+                updatedItemsSource.Add(copy);
             }
 
             /* Hard operations must not affect the UI Thread */
