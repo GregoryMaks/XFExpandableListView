@@ -253,6 +253,9 @@ namespace XFExpandableListView.Controls
             /* Hard operations must not affect the UI Thread */
             return await Task.Run(() =>
             {
+                if (AllGroups == null)
+                    return -1;
+
                 for (var i = 0; i < AllGroups.Count; i++)
                 {
                     if (!(AllGroups[i] is IExpandableGroup group)) return -1;
