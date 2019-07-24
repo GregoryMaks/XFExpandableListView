@@ -68,9 +68,14 @@ namespace XFExpandableListView.Models
             });
         }
 
+        public void CopyEventsTo(ExpandableGroup<T> dst)
+        {
+            dst.ToggleExpandedState = ToggleExpandedState;
+        }
+
         public virtual IExpandableGroup NewInstance()
         {
-            return new ExpandableGroup<T>(Id, Title);
+            return new ExpandableGroup<T>(Id, Title) { ToggleExpandedState = ToggleExpandedState } ;
         }
     }
 }
