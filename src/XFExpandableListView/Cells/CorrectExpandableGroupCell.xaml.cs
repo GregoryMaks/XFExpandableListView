@@ -10,7 +10,6 @@ using XFExpandableListView.Abstractions;
 
 namespace XFExpandableListView.Cells
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class CorrectExpandableGroupCell : ViewCell
     {
         private IExpandableGroup ViewModel => BindingContext as IExpandableGroup;
